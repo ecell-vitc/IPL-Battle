@@ -3,6 +3,7 @@ import Navbar from './components/navbar';
 import Home from './pages/home';
 import Login from './pages/login';
 import Footer from './components/footer';
+import Rules from './pages/rules';
 
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login/>} />
+        <Route path="/rules" element={<Rules/>}/>
       </Routes>
       <Footer />
     </Router>

@@ -13,7 +13,7 @@ def read_players():
         'WICKETKEEPER': 'WK'
     }
 
-    with open('./data.csv') as f:
+    with open('./players.csv') as f:
         reader = csv.DictReader(f)
         order = 1
         for row in reader:
@@ -21,7 +21,7 @@ def read_players():
                 name=row['fname'] + ' ' + row['lname'],
                 domestic=row['domestic'] == 'Indian',
                 score=int(row['score']),
-                domain=choices[row['domain'].strip()],
+                domain=choices[row['domain'].strip().upper()],
                 base_price=int(row['base_price']),
                 order=order
             ).save()
@@ -61,10 +61,3 @@ def read_users():
 
             Participant(user=u, name=u.username, room=rooms[ct//10]).save()
             ct += 1
-
-
-"""
-ADMIN CREDS:
-username = 'ipl-admin'
-password = 'auth_ipl@5.0'
-"""

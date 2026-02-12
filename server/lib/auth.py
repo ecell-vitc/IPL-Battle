@@ -20,29 +20,31 @@ def validate_room(user: User, room: Room) -> bool:
 
 
 def gen_token(username, password, is_auc=False, is_admin=False):
-    user = User.objects.filter(username=username, is_auc=is_auc, is_admin=is_admin)
+    user = User.objects.filter(username=username, is_auc=is_auc, is_admin=is_admin).first()
     
-    if len(user) == 0:
+    if user is None:
         return 404, {
             'valid': False,
             'message': 'Username not found!'
         }
     
-    if not user[0].check_password(password):
+    if not user.check_password(password):
         return 401, {
             'valid': False,
             'message': 'Incorrect Password! Please try again'
         }
     
-    token = Token.objects.get_or_create(user=user[0])[0]
+    token = Token.objects.get_or_create(user=user)[0]
     
     if is_admin: return 200, { 'valid': True, 'token': token.key, }
     return 200, {
         'valid': True,
         'token': token.key,
         'room_uid': (
-            Auctioneer.objects.get(user=user[0]).room.uid.hex if is_auc else
-            Participant.objects.get(user=user[0]).room.uid.hex
+            None if is_admin else (
+                Auctioneer.objects.get(user=user).room.uid.hex if is_auc else
+                Participant.objects.get(user=user).room.uid.hex
+            )
         )
     }
 

@@ -9,7 +9,7 @@ import Participant from './pages/participant';
 import Auctioneer from './pages/auctioneer';
 import Admin from './pages/rooms';
 import ProtectedRoute from './components/ProtectRoute'; // Import the ProtectedRoute component
-
+import Quiz from './pages/quiz';
 function App() {
 
   return (
@@ -21,7 +21,7 @@ function App() {
         <Route path="/participant/login" element={<Login />} />
         <Route path="/auctioneer/login" element={<Login isauc={true} />} />
         <Route path="/admin/login" element={<Login isAdmin={true} />} />
-
+        <Route path="/quiz/:room_uid" element={<Quiz />} />
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/participant/:room_id" element={<Participant />} />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, CheckCircle, ArrowRight, Trophy, AlertCircle, Clock } from 'lucide-react';
+import { makeRequest } from '../lib/utils';
 
 const TIME_PER_QUESTION = 12;
 
@@ -23,26 +24,10 @@ const Quiz = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const publicRequest = async (url, method = 'GET', body = null) => {
-        const options = {
-            method,
-            headers: { 'Content-Type': 'application/json' }
-        };
-        if (body) options.body = JSON.stringify(body);
-
-        const res = await fetch(url, options);
-        
-        if (!res.ok) {
-            const errorData = await res.json().catch(() => ({}));
-            throw new Error(errorData.message || `Request failed with status ${res.status}`);
-        }
-        return res.json();
-    };
-
     useEffect(() => {
         const fetchQuestions = async () => {
             try {
-                const data = await publicRequest(`localhost:8000/quiz/${room_uid}`, 'GET');
+                const data = await makeRequest(`/quiz/${room_uid}`, 'GET');
                 
                 const questionList = data.questions || data || [];
                 
@@ -54,7 +39,6 @@ const Quiz = () => {
             } catch (err) {
                 console.error("Failed to fetch questions:", err);
                 
-                // Fallback Sample Data
                 setQuestions([
                     {
                         uid: "q1",
@@ -65,11 +49,6 @@ const Quiz = () => {
                         uid: "q2",
                         question: "Max overseas players allowed in playing XI?",
                         options: ["3", "4", "5", "2"]
-                    },
-                    {
-                        uid: "q3",
-                        question: "Who is the Lead of ECell Tech Team",
-                        options: ["Nachiyappan", "Spandan", "Srivatsan", "Aditya Rana"]
                     }
                 ]);
                 setError("Server unreachable. Loaded sample questions.");
@@ -119,10 +98,11 @@ const Quiz = () => {
     const handleNextOrSubmit = () => {
         const rawTimeTaken = TIME_PER_QUESTION - timeLeft;
         const timeTaken = Math.min(Math.max(rawTimeTaken, 0), TIME_PER_QUESTION);
+
         const newAnswerEntry = {
             questionId: questions[currentQuestionIndex].uid,
             option: currentSelection,
-            timeTaken: parseFloat(timeTaken.toFixed(2)) 
+            timeTaken: parseFloat(timeTaken.toFixed(2))
         };
 
         const updatedAnswers = [...answers, newAnswerEntry];
@@ -147,10 +127,8 @@ const Quiz = () => {
             room_uid: room_uid
         };
 
-        console.log(payload);
-
         try {
-            await publicRequest(`/quiz/${room_uid}`, 'POST', payload);
+            await makeRequest(`/quiz/${room_uid}`, 'POST', payload);
             setGameState('finished');
         } catch (err) {
             console.error("Submission error:", err);

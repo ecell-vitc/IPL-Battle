@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge"
 
 const HOST = import.meta.env.VITE_API_HOST || 'localhost:8000'
 const URL = import.meta.env.VITE_API_URL || `http://${HOST}`
-const PROD = import.meta.env.PROD ?? false
+const PROD = (import.meta.env.VITE_PROD ?? 'false') === 'true'
 export { HOST, URL, PROD }
 
 export function cn(...inputs) {

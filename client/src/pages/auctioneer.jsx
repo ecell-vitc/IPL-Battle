@@ -10,6 +10,7 @@ import {
 
 
 import { useParams } from 'react-router-dom';
+import { HOST, PROD, makeRequest } from '../lib/utils';
 
 function AuctioneerPage() {
   const [players, setPlayers] = useState({});
@@ -107,7 +108,7 @@ function AuctioneerPage() {
   ])
 
   const connectWebSocket = (roomUid, authToken) => {
-    const ws = new WebSocket(`wss://ipl-battle.onrender.com/room/${roomUid}/`);
+    const ws = new WebSocket(`${PROD ? 'wss' : 'ws'}://${HOST}/room/${roomUid}/`);
     setSocket(ws);
 
     ws.onopen = () => {

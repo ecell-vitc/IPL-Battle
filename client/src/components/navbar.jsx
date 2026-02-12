@@ -93,10 +93,11 @@ const Navbar = () => {
             <NavLink href="/">Home</NavLink>
             <NavLink href="/rules">Rules</NavLink>
 
-            { (role === "auctioneer" || role === "participant") ? 
-    (<NavLink href={`/${role}/${room_uid}`}>Dashboard</NavLink>) : 
-    (<NavLink href={`/admin/dashboard`}>Dashboard</NavLink>)
-}
+            {!isLoggedIn ? <></> :
+              (role === "auctioneer" || role === "participant") ? 
+                (<NavLink href={`/${role}/${room_uid}`}>Dashboard</NavLink>) : 
+                (<NavLink href={`/admin/dashboard`}>Dashboard</NavLink>)
+            }
 
             
             

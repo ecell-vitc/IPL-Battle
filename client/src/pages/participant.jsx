@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'; 
+import { PROD, HOST, makeRequest } from '../lib/utils'
 
 function ParticipantsPage() {
   const [balance, setBalance] = useState(0);
@@ -81,7 +82,7 @@ function ParticipantsPage() {
   ])
 
   const connectWebSocket = (roomUid, authToken) => {
-    const ws = new WebSocket(`wss://ipl-battle.onrender.com/room/${roomUid}/`);
+    const ws = new WebSocket(`${PROD ? 'wss' : 'ws'}://${HOST}/room/${roomUid}/`);
     setSocket(ws);
 
     ws.onopen = () => {

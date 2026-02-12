@@ -15,19 +15,19 @@ const GameRules = () => {
       {/* Round 1 Card */}
       <div className="bg-gray-900/50 backdrop-blur-xl rounded-3xl p-8 border border-gray-800 mb-8 text-center relative">
         <h3 className="text-3xl font-bold text-orange-500 mb-4">Round 1</h3>
-        <p className="text-gray-400 mb-6">Score highest to select your team first!</p>
+        <p className="text-gray-400 mb-6">Fastest Finger First</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50">
-            <div className="text-3xl font-bold text-yellow-400">15</div>
-            <div className="text-white">MCQ's</div>
+            <div className="text-3xl font-bold text-yellow-400">10</div>
+            <div className="text-white">MCQs</div>
           </div>
           <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50">
-            <div className="text-3xl font-bold text-yellow-400">+1</div>
-            <div className="text-white">Mark per Correct</div>
+            <div className="text-3xl font-bold text-yellow-400"><Timer className='mx-auto' size={35} /></div>
+            <div className="text-white">Time-based Points</div>
           </div>
           <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50">
-            <div className="text-3xl font-bold text-yellow-400">7</div>
+            <div className="text-3xl font-bold text-yellow-400">2</div>
             <div className="text-white">Minutes</div>
           </div>
         </div>

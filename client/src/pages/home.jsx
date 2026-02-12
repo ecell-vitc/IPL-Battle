@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import { Spotlight } from "@/components/ui/spotlight-new";
 
 import { 
-  Users, 
+  Users, User, 
   Trophy, 
   TrendingUp,
   Zap,
@@ -12,14 +11,6 @@ import GameRules from '@/components/flow';
 
 
 const Home = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
 
@@ -39,35 +30,34 @@ const Home = () => {
      
 
       {/* Hero Section */}
-<main className="relative pt-40 pb-24 flex flex-col items-center justify-center min-h-screen text-center px-4">
-<div className="space-y-8 max-w-6xl mx-auto">
-    
-    <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
-      <div className="flex-none relative w-full md:w-1/2 flex justify-center md:justify-start">
-        <div className="relative">
-          
-          <img 
-            src="/IPL-Logo.png"
-            alt="IPL 2024"
-            className="w-56 h-56 md:w-64 md:h-64 object-contain animate-float"
-          />
-                    <h1 className="text-6xl font-extrabold">
-                      <span className="relative inline-block">
-                        <span className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 blur-lg opacity-5 "></span>
-                        <span className="relative bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 bg-clip-text text-transparent">
-                          Battle 5.0
-                        </span>
+      <main className="relative pt-40 pb-24 flex flex-col items-center justify-center min-h-screen text-center px-4">
+        <div className="space-y-8 max-w-6xl mx-auto">
+            
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
+              <div className="flex-none relative w-full md:w-1/2 flex justify-center md:justify-start">
+                <div className="relative">
+                  
+                  <img 
+                    src="/IPL-Logo.png"
+                    alt="IPL 2024"
+                    className="w-56 h-56 md:w-64 md:h-64 object-contain animate-float"
+                  />
+                  <h1 className="text-6xl font-extrabold">
+                    <span className="relative inline-block">
+                      <span className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 blur-lg opacity-5 "></span>
+                      <span className="relative bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 bg-clip-text text-transparent">
+                        Battle 6.0
                       </span>
-                    </h1>
-        </div>
-      </div>
+                    </span>
+                  </h1>
+              </div>
+            </div>
 
-      {/* Event Details */}
-      <div className="flex-1 text-left space-y-6 pl-0 md:pl-8">
-        <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-        Build Your Dream Cricket Team 
-        </h2>
-              
+            <div className="flex-1 text-left space-y-6 pl-0 md:pl-8">
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+                Build Your Dream Cricket Team 
+              </h2>
+                
               <p className="text-gray-300 text-lg md:text-xl leading-relaxed">
               Join the ultimate cricket auction experience and prove your team management skills
               </p>
@@ -76,16 +66,32 @@ const Home = () => {
                 <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-xl border border-gray-800">
                   <Trophy className="w-8 h-8 text-amber-400" />
                   <div>
-                    <h3 className="text-xl font-semibold text-white">₹ 10,000</h3>
+                    <h3 className="text-xl font-semibold text-white">₹ 25,000</h3>
                     <p className="text-gray-400 text-sm">Prize Pool</p> 
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-xl border border-gray-800">
-                  <Users className="w-8 h-8 text-green-400" />
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">₹ 299</h3>
-                    <p className="text-gray-400 text-sm">Registrion Fee</p> 
+                <div className="row-span-2 bg-gray-900/50 rounded-xl border border-gray-800">
+                  <div className="flex items-center space-x-4 py-3 px-4">
+                    <User className="w-8 h-8 text-green-400" />
+                    <div>
+                      <h3 className="text-xl font-semibold text-white">₹150</h3>
+                      <p className="text-gray-400 text-sm">Single</p> 
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4 py-3 px-4">
+                    <Users className="w-8 h-8 text-green-400" />
+                    <div>
+                      <h3 className="text-xl font-semibold text-white">₹250</h3>
+                      <p className="text-gray-400 text-sm">Duo</p> 
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4 py-3 px-4">
+                    <Users className="w-8 h-8 text-green-400" />
+                    <div>
+                      <h3 className="text-xl font-semibold text-white">₹300</h3>
+                      <p className="text-gray-400 text-sm">Trio</p> 
+                    </div>
                   </div>
                 </div>
 
@@ -96,22 +102,11 @@ const Home = () => {
                     <p className="text-gray-400 text-sm">Real-time updates</p>
                   </div>
                 </div>
-
-                <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-xl border border-gray-800">
-                  <Zap className="w-8 h-8 text-purple-400" />
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">Power Plays</h3>
-                    <p className="text-gray-400 text-sm">Special match events</p>
-                  </div>
-                </div>
               </div>
-
 
             </div>
           </div>
-          
         </div>
-
 
         <GameRules/>
 

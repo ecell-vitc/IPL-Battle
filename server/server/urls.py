@@ -35,14 +35,16 @@ def get_board(req, id):
 # from django.contrib import admin
 from django.urls import path, re_path, include
 from admin import consumers
-
+from . import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('participant/', include('participant.urls')),
     path('auctioneer/', include('auctioneer.urls')),
     path('admin/', include('admin.urls')),
-    path('leaderboard/<str:id>/', get_board)
+    path('leaderboard/<str:id>/', get_board),
+    path('quiz/<uuid:uid>/', views.questions, name='get_questions'),
+    path('quiz/<str:uid>/leaderboard/', views.quiz_leaderboard, name='quiz_leaderboard')
 ]
 
 websocket_urlpatterns = [

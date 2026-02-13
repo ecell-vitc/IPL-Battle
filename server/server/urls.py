@@ -16,22 +16,6 @@ Including another URLconf
 """
 
 
-from admin.models import Room
-from participant.models import Team
-from django.db.models import Sum
-from django.http.response import JsonResponse
-import uuid
-
-from lib import logic
-
-def get_board(req, id):
-    try: room = Room.objects.get(uid=uuid.UUID(id))
-    except: return JsonResponse({ 'valid': False, 'message': 'Room not found!' })
-
-    return JsonResponse(logic.get_leaderboard(room))
-
-
-
 # from django.contrib import admin
 from django.urls import path, re_path, include
 from admin import consumers
@@ -42,8 +26,8 @@ urlpatterns = [
     path('participant/', include('participant.urls')),
     path('auctioneer/', include('auctioneer.urls')),
     path('admin/', include('admin.urls')),
-    path('leaderboard/<str:id>/', get_board),
-    path('quiz/<uuid:uid>/', views.questions, name='get_questions'),
+    path('leaderboard/<str:id>/', views.get_board),
+    path('quiz/<str:uid>/', views.questions, name='get_questions'),
     path('quiz/<str:uid>/leaderboard/', views.quiz_leaderboard, name='quiz_leaderboard')
 ]
 

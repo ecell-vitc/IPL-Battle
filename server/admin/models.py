@@ -45,10 +45,8 @@ class Room(models.Model):
     curr_player = models.ForeignKey(to=Player, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=25)
 
-from django.db import models
-from admin.models import Room
-
 class Question(models.Model):
+    uid = models.UUIDField(default=uuid.uuid4, primary_key=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='questions')
     question = models.CharField(max_length=255)
     options = models.JSONField(default=list) 

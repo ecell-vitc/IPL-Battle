@@ -26,7 +26,7 @@ const Quiz = () => {
     useEffect(() => {
         const fetchQuestions = async () => {
             try {
-                const data = await makeRequest(`/quiz/${room_uid}`, 'GET');
+                const data = await makeRequest(`/quiz/${room_uid}/`, 'GET');
                 
                 // 1. Handle API returning Array directly
                 const questionList = Array.isArray(data) ? data : (data.questions || []);

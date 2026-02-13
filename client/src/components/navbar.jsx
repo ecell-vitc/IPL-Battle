@@ -76,16 +76,13 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2">
         <div className="flex items-center justify-between h-20">
           <div className="flex flex-col items-start">
-            <a href="/" className="flex items-center space-x-3">
+            <NavLink href="/" className="flex items-center space-x-3">
               <img 
                 src="/e_cell_logo.png" 
                 alt="E Cell" 
                 className="h-14 w-auto animate-pulse" 
               />
-              <span className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent font-mono">
-                E-CELL
-              </span>
-            </a>
+            </NavLink>
           </div>
 
           {/* Desktop Navigation */}

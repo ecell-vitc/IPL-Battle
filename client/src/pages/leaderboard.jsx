@@ -13,37 +13,23 @@ const Leaderboard = () => {
     useEffect(() => {
         const fetchLeaderboard = async () => {
             try {
-                const data = await makeRequest(`/quiz/leaderboard/${room_uid}`, 'GET');
+                const data = await makeRequest(`/quiz/${room_uid}/leaderboard`, 'GET');
                 
                 const results = data.leaderboard || data || [];
                 
                 const sortedResults = results.sort((a, b) => {
                     if (b.score !== a.score) return b.score - a.score;
-                    return a.timestamp - b.timestamp;
+                    return new Date(a.timestamp) - new Date(b.timestamp);
                 });
 
-                if (sortedResults.length === 0) throw new Error("Empty");
-
-                setLeaderboardData(sortedResults);
+                if (sortedResults.length === 0) {
+                    setLeaderboardData([]);
+                } else {
+                    setLeaderboardData(sortedResults);
+                }
             } catch (err) {
                 console.error("Failed to fetch leaderboard:", err);
-                
-                const now = Date.now();
-                const sampleData = [
-                    { teamname: "Mahesh", score: 1200, timestamp: now - 10000 },
-                    { teamname: "Srivatsan", score: 1150, timestamp: now - 12500 },
-                    { teamname: "Yashita", score: 1150, timestamp: now - 12800 },
-                    { teamname: "Tharani", score: 1050, timestamp: now - 40000 },
-                    { teamname: "Ayush", score: 980, timestamp: now - 55000 },
-                    { teamname: "Manmay", score: 920, timestamp: now - 60000 },
-                    { teamname: "Hanan", score: 890, timestamp: now - 72000 },
-                    { teamname: "Rohan", score: 850, timestamp: now - 80000 },
-                    { teamname: "Karthik", score: 800, timestamp: now - 90000 },
-                    { teamname: "Priya", score: 750, timestamp: now - 95000 },
-                    { teamname: "Rahul", score: 600, timestamp: now - 100000 }
-                ];
-                setLeaderboardData(sampleData);
-                setError(""); 
+                setError(err.message || "Failed to load leaderboard");
             } finally {
                 setLoading(false);
             }
@@ -54,17 +40,19 @@ const Leaderboard = () => {
         }
     }, [room_uid]);
 
-    const formatToIST = (unixTimestamp) => {
-        if (!unixTimestamp) return "-";
-        const date = new Date(unixTimestamp);
-        return date.toLocaleTimeString('en-IN', {
+    const formatToIST = (isoString) => {
+        if (!isoString) return "-";
+        const date = new Date(isoString);
+        const options = {
             timeZone: 'Asia/Kolkata',
             hour12: true,
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit',
-            fractionalSecondDigits: 3 
-        });
+            second: '2-digit'
+        };
+        const timePart = date.toLocaleTimeString('en-IN', options);
+        const ms = date.getMilliseconds().toString().padStart(3, '0');
+        return `${timePart.replace(' ', `.${ms} `)}`;
     };
 
     const getRankDisplay = (index) => {
@@ -117,7 +105,6 @@ const Leaderboard = () => {
 
             <BackgroundEffects />
             
-            {/* Increased max-width to 6xl for wider table */}
             <Card className="w-full max-w-6xl bg-[#1a2436]/90 border border-blue-900/30 shadow-2xl backdrop-blur-xl relative z-10 h-[80vh] flex flex-col">
                 <CardHeader className="space-y-2 pb-6 border-b border-blue-900/20 bg-[#151e2e]/50 rounded-t-xl">
                     <CardTitle className="text-3xl font-bold text-center tracking-tighter text-white flex items-center justify-center gap-3">
@@ -133,7 +120,7 @@ const Leaderboard = () => {
                     {loading ? (
                         <div className="flex-1 flex flex-col items-center justify-center text-blue-300 gap-4">
                             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-500"></div>
-                            <p>Calculating scores...</p>
+                            <p>Loading ranking...</p>
                         </div>
                     ) : error ? (
                         <div className="flex-1 flex items-center justify-center p-6">
@@ -144,12 +131,11 @@ const Leaderboard = () => {
                         </div>
                     ) : leaderboardData.length === 0 ? (
                         <div className="flex-1 flex items-center justify-center text-blue-300/60">
-                            No results found for this room.
+                            No submissions yet for this room.
                         </div>
                     ) : (
                         <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-3">
                             
-                            {/* Adjusted grid columns for better spacing */}
                             <div className="grid grid-cols-12 gap-4 px-6 py-3 text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2 sticky top-0 bg-[#0c1629]/95 backdrop-blur-md z-10 border-b border-blue-900/30">
                                 <div className="col-span-2 text-center">Rank</div>
                                 <div className="col-span-4 pl-4">Team</div>
@@ -167,26 +153,20 @@ const Leaderboard = () => {
                                                 : 'bg-[#0c1629]/40 border-blue-900/10 hover:bg-[#0c1629]/60 hover:border-blue-700/30'
                                             }`}
                                     >
-                                        {/* Rank Column */}
-                                        <div className="col-span-2 flex justify-center">
-                                            {getRankDisplay(index)}
-                                        </div>
+                                        <div className="col-span-2 flex justify-center">{getRankDisplay(index)}</div>
 
-                                        {/* Team Name Column */}
                                         <div className="col-span-4 pl-4">
                                             <h3 className={`font-bold text-lg truncate ${index === 0 ? 'text-yellow-100' : 'text-blue-100'}`}>
                                                 {entry.teamname || entry.user || `Team ${index + 1}`}
                                             </h3>
                                         </div>
 
-                                        {/* Timestamp Column */}
                                         <div className="col-span-4 text-center">
                                             <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-blue-950/40 border border-blue-800/20 text-blue-300 font-mono text-sm">
                                                 {formatToIST(entry.timestamp)}
                                             </div>
                                         </div>
 
-                                        {/* Score Column */}
                                         <div className="col-span-2 text-right pr-4">
                                             <div className="font-mono font-bold text-2xl text-orange-400 leading-none">
                                                 {Math.round(entry.score)}
@@ -194,7 +174,6 @@ const Leaderboard = () => {
                                             <div className="text-[10px] text-blue-400/50 font-medium uppercase mt-1">Points</div>
                                         </div>
 
-                                        {/* Row Highlight Effect */}
                                         {index < 3 && (
                                             <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-xl ${
                                                 index === 0 ? 'bg-yellow-500' : 

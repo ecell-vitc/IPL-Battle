@@ -44,7 +44,7 @@ urlpatterns = [
     path('admin/', include('admin.urls')),
     path('leaderboard/<str:id>/', get_board),
     path('quiz/<uuid:uid>/', views.questions, name='get_questions'),
-    path('quiz/<str:uid>/leaderboard/', views.questions, name='quiz_leaderboard')
+    path('quiz/<str:uid>/leaderboard/', views.quiz_leaderboard, name='quiz_leaderboard')
 ]
 
 websocket_urlpatterns = [

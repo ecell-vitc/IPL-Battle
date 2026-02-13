@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, CheckCircle, ArrowRight, Trophy, AlertCircle, Clock } from 'lucide-react';
+// CORRECT IMPORT PATH
 import { makeRequest } from '../lib/utils';
 
 const TIME_PER_QUESTION = 12;
@@ -11,7 +12,6 @@ const Quiz = () => {
     const navigate = useNavigate();
 
     const [gameState, setGameState] = useState('entry');
-    
     const [teamName, setTeamName] = useState('');
     const [questions, setQuestions] = useState([]);
     
@@ -20,38 +20,30 @@ const Quiz = () => {
     const [currentSelection, setCurrentSelection] = useState(null); 
     
     const [timeLeft, setTimeLeft] = useState(TIME_PER_QUESTION);
-
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [roomName, setRoomName] = useState(room_uid);
 
     useEffect(() => {
         const fetchQuestions = async () => {
             try {
                 const data = await makeRequest(`/quiz/${room_uid}`, 'GET');
                 
-                const questionList = data.questions || data || [];
+                // 1. Handle API returning Array directly
+                const questionList = Array.isArray(data) ? data : (data.questions || []);
                 
                 if (questionList.length === 0) {
                     throw new Error("No questions available for this room.");
                 }
 
+                // 2. Extract Room Name if available in the first question
+                if (questionList[0] && questionList[0].room_name) {
+                    setRoomName(questionList[0].room_name);
+                }
+
                 setQuestions(questionList);
             } catch (err) {
                 console.error("Failed to fetch questions:", err);
-                
-                setQuestions([
-                    {
-                        uid: "q1",
-                        question: "Who is the captain of CSK?",
-                        options: ["Dhoni", "Ruturaj", "Jadeja", "Raina"]
-                    },
-                    {
-                        uid: "q2",
-                        question: "Max overseas players allowed in playing XI?",
-                        options: ["3", "4", "5", "2"]
-                    }
-                ]);
-                setError("Server unreachable. Loaded sample questions.");
+                setError(err.message || "Failed to load quiz.");
             }
         };
 
@@ -91,17 +83,19 @@ const Quiz = () => {
         setTimeLeft(TIME_PER_QUESTION);
     };
 
-    const handleOptionSelect = (option) => {
-        setCurrentSelection(option);
+    const handleOptionSelect = (key) => {
+        setCurrentSelection(key);
     };
 
     const handleNextOrSubmit = () => {
         const rawTimeTaken = TIME_PER_QUESTION - timeLeft;
         const timeTaken = Math.min(Math.max(rawTimeTaken, 0), TIME_PER_QUESTION);
+        
+        const currentQ = questions[currentQuestionIndex];
 
         const newAnswerEntry = {
-            questionId: questions[currentQuestionIndex].uid,
-            option: currentSelection,
+            questionId: currentQ.uid || currentQ.id, // Handle potential ID field variations
+            option: currentSelection || "",
             timeTaken: parseFloat(timeTaken.toFixed(2))
         };
 
@@ -118,7 +112,6 @@ const Quiz = () => {
     };
 
     const finalizeQuiz = async (finalAnswers) => {
-        setLoading(true);
         setGameState('submitting');
         
         const payload = {
@@ -128,14 +121,13 @@ const Quiz = () => {
         };
 
         try {
-            await makeRequest(`/quiz/${room_uid}`, 'POST', payload);
+            await makeRequest(`/quiz/${room_uid}/`, 'POST', payload);
+            
             setGameState('finished');
         } catch (err) {
             console.error("Submission error:", err);
             setError(err.message || "Failed to submit results.");
             setGameState('finished'); 
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -150,7 +142,7 @@ const Quiz = () => {
                                 IPL Battle Quiz
                             </span>
                         </CardTitle>
-                        <p className="text-blue-300/60 text-center text-sm">Room: {room_uid}</p>
+                        <p className="text-blue-300/60 text-center text-sm">Room: {roomName}</p>
                     </CardHeader>
                     <CardContent>
                         {error && <ErrorMessage message={error} />}
@@ -202,7 +194,11 @@ const Quiz = () => {
     }
 
     const currentQ = questions[currentQuestionIndex];
-    if (!currentQ) return <div className="text-white">Loading...</div>;
+    if (!currentQ) return <div className="text-white text-center mt-10">Loading Question...</div>;
+
+    // 3. Logic to handle Object Options { "A": "Val", "B": "Val" }
+    const optionsObj = currentQ.options || {};
+    const optionKeys = Object.keys(optionsObj).sort(); // ["A", "B", "C", "D"]
 
     const isLastQuestion = currentQuestionIndex === questions.length - 1;
     const progressPercentage = (timeLeft / TIME_PER_QUESTION) * 100;
@@ -239,12 +235,14 @@ const Quiz = () => {
                     </h2>
 
                     <div className="grid gap-3 mb-6">
-                        {currentQ.options && currentQ.options.map((opt, idx) => {
-                            const isSelected = currentSelection === opt;
+                        {/* 4. Map over Keys (A, B) to display options */}
+                        {optionKeys.map((key) => {
+                            const optValue = optionsObj[key]; // "Vatsan"
+                            const isSelected = currentSelection === key; // Compare keys
                             return (
                                 <button
-                                    key={idx}
-                                    onClick={() => handleOptionSelect(opt)}
+                                    key={key}
+                                    onClick={() => handleOptionSelect(key)}
                                     className={`relative p-4 rounded-xl text-left transition-all border-2 group
                                         ${isSelected 
                                             ? 'bg-blue-600/20 border-blue-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.3)]' 
@@ -252,7 +250,10 @@ const Quiz = () => {
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">
-                                        <span className="font-medium pr-4">{opt}</span>
+                                        <span className="font-medium pr-4">
+                                            <span className="font-bold text-orange-400 mr-2">{key}.</span>
+                                            {optValue}
+                                        </span>
                                         {isSelected && <CheckCircle className="w-5 h-5 text-blue-400" />}
                                     </div>
                                 </button>
@@ -289,17 +290,6 @@ const BackgroundEffects = () => (
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-gradient-to-r from-blue-600 to-orange-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-blob"></div>
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-blob animation-delay-2000"></div>
         <div className="absolute inset-0 bg-[url('/subtle-prism.svg')] opacity-10"></div>
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-blue-400/20 rounded-full"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animation: `float ${10 + Math.random() * 20}s infinite`
-            }}
-          ></div>
-        ))}
     </div>
 );
 

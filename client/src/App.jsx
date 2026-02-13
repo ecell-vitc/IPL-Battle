@@ -23,7 +23,7 @@ function App() {
         <Route path="/auctioneer/login" element={<Login isauc={true} />} />
         <Route path="/admin/login" element={<Login isAdmin={true} />} />
         <Route path="/quiz/:room_uid" element={<Quiz />} />
-        <Route path="/leaderboard/:room_uid" element={<Leaderboard />} />
+        <Route path="/quiz/:room_uid/leaderboard" element={<Leaderboard />} />
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/participant/:room_id" element={<Participant />} />

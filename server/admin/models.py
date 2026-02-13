@@ -44,3 +44,18 @@ class Room(models.Model):
     uid = models.UUIDField(default=uuid.uuid4, primary_key=True)
     curr_player = models.ForeignKey(to=Player, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=25)
+
+from django.db import models
+from admin.models import Room
+
+class Question(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='questions')
+    question = models.CharField(max_length=255)
+    options = models.JSONField(default=list) 
+    correct_answer = models.CharField(max_length=255)
+
+class Scores(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='scores')
+    teamname = models.CharField(max_length=30)
+    score = models.IntegerField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True)

@@ -23,7 +23,7 @@ def questions(request, uid):
             team_answers = data.get('answers') 
             total_points = 0
             
-            for q_id, response in user_answers.items():
+            for q_id, response in team_answers.items():
                 try:
                     question = Question.objects.get(id=q_id, room__uid=uid)
                     submitted_answer = response.get('answer') 
@@ -36,7 +36,7 @@ def questions(request, uid):
                     continue
             
             # Save the score
-            Scores.objects.create(room_id=uid, teamname=username, score=int(total_points))
+            Scores.objects.create(room_id=uid, teamname=teamname, score=int(total_points))
    
             leaderboard_data = list(Scores.objects.filter(room_id=uid)
                                     .order_by('-score', 'timestamp') 

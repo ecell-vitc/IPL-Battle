@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
 import { Zap, Sparkles, X, Menu, LogOut, User } from 'lucide-react';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('');
 
   const room_uid = localStorage.getItem('room_uid');
   const role = localStorage.getItem('role');
+
+  const loc = useLocation();
+
+  useEffect(() => {
+    setIsMenuOpen(false); // Close menu on route change
+  }, [loc.pathname])
 
 
   // Sync with localStorage
@@ -52,16 +53,22 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('login');
-    localStorage.removeItem('token');
-    localStorage.removeItem('Name');
-    localStorage.removeItem('room_uid');
-    localStorage.removeItem('role');
-    setIsLoggedIn(false);
-    setUserName('');
-    window.location.href = '/';
-  };
+  const links = [
+    { name: 'Home', href: '/' },
+    { name: 'Rules', href: '/rules' },
+    { name: 'Players', href: '/players' },
+    ...(isLoggedIn ?
+      [
+        (
+          (role === "auctioneer" || role === "participant") ?
+            { name: 'Dashboard', href: `/${role}/${room_uid}` } :
+            { name: 'Dashboard', href: '/admin/dashboard' }
+        ),
+        { name: 'Logout', href: '/logout' }
+      ]
+      : [{ name: 'Login', href: '/participant/login' }]
+    )
+  ]
 
 
 
@@ -87,53 +94,11 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <NavLink href="/">Home</NavLink>
-            <NavLink href="/rules">Rules</NavLink>
-
-            {!isLoggedIn ? <></> :
-              (role === "auctioneer" || role === "participant") ? 
-                (<NavLink href={`/${role}/${room_uid}`}>Dashboard</NavLink>) : 
-                (<NavLink href={`/admin/dashboard`}>Dashboard</NavLink>)
-            }
-
-            
-            
-            {isLoggedIn ? (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full hover:bg-gray-800/50 text-gray-300 hover:text-white"
-                  >
-                    <User className="h-6 w-6" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent 
-                  className="w-48 p-2 bg-gray-900 border border-gray-800 rounded-lg"
-                  align="end"
-                  side="bottom"
-                >
-                  <div className="flex flex-col space-y-2">
-                    <div className="px-3 py-2 text-sm text-gray-300 truncate">
-                      {userName}
-                    </div>
-                    <Button
-                      onClick={handleLogout}
-                      className="w-full justify-start gap-2 text-red-400 hover:text-red-300 hover:bg-red-900/20"
-                      variant="ghost"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Logout
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            ) : (
-              <NavLink href="/participant/login" isButton>
-                Login
+            {links.map((link) => (
+              <NavLink key={link.name} href={link.href} isButton={link.name === 'Login'}>
+                {link.name}
               </NavLink>
-            )}
+            ))}
           </div>
 
           {/* Mobile menu button */}
@@ -154,29 +119,11 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-gray-950/95 backdrop-blur-xl border-b border-gray-800/50">
           <div className="px-4 py-3 space-y-3">
-            <MobileNavLink href="/">Home</MobileNavLink>
-            <MobileNavLink href="/rules">Rules</MobileNavLink>
-            <NavLink href={`/${role}/${room_uid}`}>Dashboard</NavLink>
-            
-            {isLoggedIn ? (
-              <>
-                <div className="px-4 py-3 text-gray-300 bg-gray-900/50 rounded-lg">
-                  Welcome {userName}
-                </div>
-                <Button 
-                  onClick={handleLogout}
-                  className="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-medium"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <MobileNavLink href="/participant/login" isButton>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Login
+            {links.map((link) => (
+              <MobileNavLink key={link.name} href={link.href}>
+                {link.name}
               </MobileNavLink>
-            )}
+            ))}
           </div>
         </div>
       )}
@@ -186,7 +133,7 @@ const Navbar = () => {
 
 // Reusable NavLink component
 const NavLink = ({ href, children, isButton }) => (
-  <a href={href} className="group relative text-gray-300 hover:text-white transition-all">
+  <Link to={href} className="group relative text-gray-300 hover:text-white transition-all">
     {isButton ? (
       <Button className="relative overflow-hidden bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-400 hover:to-yellow-400 px-6 py-2 rounded-full font-medium text-gray-900 hover:text-gray-950 transition-all group">
         {children}
@@ -197,13 +144,12 @@ const NavLink = ({ href, children, isButton }) => (
         <div className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-green-400 to-cyan-400 group-hover:w-full transition-all duration-300" />
       </>
     )}
-  </a>
+  </Link>
 );
 
 // Reusable MobileNavLink component
 const MobileNavLink = ({ href, children, isButton }) => (
-  <a
-    href={href}
+  <Link to={href}
     className={`block px-4 py-3 ${
       isButton 
         ? 'text-orange-400 hover:text-white' 
@@ -211,7 +157,7 @@ const MobileNavLink = ({ href, children, isButton }) => (
     } bg-gray-900/50 rounded-lg`}
   >
     {children}
-  </a>
+  </Link>
 );
 
 export default Navbar;

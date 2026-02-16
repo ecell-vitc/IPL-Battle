@@ -12,6 +12,7 @@ import ProtectedRoute from './components/ProtectRoute'; // Import the ProtectedR
 import Quiz from './pages/quiz';
 import Leaderboard from './pages/leaderboard';
 import Players from './pages/players';
+import Logout from './pages/logout';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
         <Route path="/quiz/:room_uid" element={<Quiz />} />
         <Route path="/quiz/:room_uid/leaderboard" element={<Leaderboard />} />
         <Route path="/players/" element={<Players />} />
+        <Route path="/logout" element={<Logout />} />
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/participant/:room_id" element={<Participant />} />

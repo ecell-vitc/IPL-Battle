@@ -11,6 +11,8 @@ import Admin from './pages/rooms';
 import ProtectedRoute from './components/ProtectRoute'; // Import the ProtectedRoute component
 import Quiz from './pages/quiz';
 import Leaderboard from './pages/leaderboard';
+import Players from './pages/players';
+
 function App() {
 
   return (
@@ -24,6 +26,7 @@ function App() {
         <Route path="/admin/login" element={<Login isAdmin={true} />} />
         <Route path="/quiz/:room_uid" element={<Quiz />} />
         <Route path="/quiz/:room_uid/leaderboard" element={<Leaderboard />} />
+        <Route path="/players/" element={<Players />} />
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/participant/:room_id" element={<Participant />} />

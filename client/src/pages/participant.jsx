@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'; 
 import { PROD, HOST, makeRequest } from '../lib/utils'
+import Banner from '../components/banner';
 
 function ParticipantsPage() {
   const [balance, setBalance] = useState(0);
@@ -113,13 +114,7 @@ function ParticipantsPage() {
 
         <div className="flex flex-col items-center justify-center ">
           {/* Current Player */}
-          {currPlayer ?
-            <>
-              <img src={`/cricketers/${currPlayer.order}.jpg`} className="w-full md:w-2/3 mb-5 rounded-md h-full object-cover mx-auto " alt="Current Player" />
-              <p className='text-center text-white text-2xl mb-4'>Base Price: { currPlayer.base_price }</p>
-            </>
-            : <></>
-          }
+          <Banner {...currPlayer} />
   
           {/* List of Players Bought */}
           <div className="md:col-span-2 bg-gray-900/40 rounded-lg p-6 backdrop-blur-sm border border-gray-800">

@@ -1,6 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.anton-regular {
+  font-family: "Anton", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.numans-regular {
+  font-family: "Numans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.licorice-regular {
+  font-family: "Licorice", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  background: linear-gradient(to bottom right, #030712, #111827, #030712)
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

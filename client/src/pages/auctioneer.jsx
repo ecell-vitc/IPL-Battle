@@ -11,6 +11,7 @@ import {
 
 import { useParams } from 'react-router-dom';
 import { HOST, PROD, makeRequest } from '../lib/utils';
+import Banner from '../components/banner';
 
 function AuctioneerPage() {
   const [players, setPlayers] = useState({});
@@ -183,123 +184,117 @@ function AuctioneerPage() {
 
         <div className="flex flex-col items-center justify-center ">
           {/* Current Player */}
-          {currPlayer ?
-            <>
-              <img src={`/cricketers/${currPlayer.order}.jpg`} className="w-full md:w-2/3 mb-5 rounded-md h-full object-cover mx-auto " alt="Current Player" />
-              <p className='text-center text-white text-4xl mb-4'>Base Price: { currPlayer.base_price }</p>
-            </>
-            : <></>
-          }
-            <div className="flex justify-center space-x-4">
-              <button
-                disabled={!prev}
-                onClick={() => changePlayer(false)}
-                className="p-2 disabled:opacity-20 bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors"
-              >
-                <ArrowLeft className="w-6 h-6" />
-              </button>
-              <button
-                disabled={!next}
-                onClick={() => changePlayer(true)}
-                className="p-2 disabled:opacity-20 bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors"
-              >
-                <ArrowRight className="w-6 h-6" />
-              </button>
-            </div>
-            <div className="mt-4 mb-6 flex space-x-5">
-              <input
-                type="number"
-                placeholder="Amount (in Lakhs)"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="w-full bg-gray-800/60 rounded-lg py-2 pl-4 pr-10 backdrop-blur-sm border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors"
-              />
-              <button
-                onClick={handleAllocatePlayer}
-                disabled={!amount || !currPlayer}
-                className="p-2 bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
-              >
-                Allocate
-              </button>
-            </div>
+          <Banner {...currPlayer} />
+          <div className="flex justify-center space-x-4">
+            <button
+              disabled={!prev}
+              onClick={() => changePlayer(false)}
+              className="p-2 disabled:opacity-20 bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+            <button
+              disabled={!next}
+              onClick={() => changePlayer(true)}
+              className="p-2 disabled:opacity-20 bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors"
+            >
+              <ArrowRight className="w-6 h-6" />
+            </button>
           </div>
-
-          {/* Team Details Section */}
-          <div className="md:col-span-2 bg-gray-900/40 rounded-lg p-6 backdrop-blur-sm border border-gray-800">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-semibold">Team Details</h2>
-              <input
-                type="text"
-                placeholder="Search teams..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="bg-gray-800/60 rounded-lg py-2 px-4 backdrop-blur-sm border border-gray-700 focus:outline-none focus:border-orange-500"
-              />
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-800">
-                    <th className="text-left py-3 px-4">Select</th>
-                    <th className="text-left py-3 px-4">S.no</th>
-                    <th className="text-left py-3 px-4">Team Name</th>
-                    <th className="text-left py-3 px-4">Balance</th>
-                    <th className="text-left py-3 px-4">Players</th>
-                  </tr>
-                </thead>
-              </table>
-
-              {Object.keys(participants).length > 0 ? (
-                <Accordion type="single" collapsible className="w-full">
-                  {filteredTeams.map(([uid, team], index) => (
-                    <AccordionItem value={uid} key={uid} className="border-b border-gray-800">
-                      <AccordionTrigger className="w-full hover:no-underline">
-                        <div className="w-full grid grid-cols-5 gap-4">
-                          <div className="py-3 px-4 text-left"><input type="radio" name="curr_participant" value={uid} /></div>
-                          <div className="py-3 px-4 text-left">{index + 1}</div>
-                          <div className="py-3 px-4 text-left">{team.name}</div>
-                          <div className="py-3 px-4 text-left">₹{team.balance} L</div>
-                          <div className="py-3 px-4 text-left">{Object.keys(team.players || {}).length}</div>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <div className="px-4 py-3 bg-gray-800/30">
-                          <h4 className="font-semibold mb-2">Team Players:</h4>
-                          {team.players && Object.keys(team.players).length > 0 ? (
-                            <ul className="space-y-2">
-                              {Object.entries(team.players).map(([playerId, playerData]) => (
-                                <li key={playerId} className="flex justify-between items-center">
-                                  <span>{players[playerData.player_id]?.name || "Unknown Player"}</span>
-                                  <div className="flex items-center">
-                                    <span className="mr-4">₹{playerData.price} L</span>
-                                    <button
-                                      onClick={() => handleRemovePlayer(playerId)}
-                                      className="p-1 hover:bg-red-600 rounded-full transition-colors"
-                                      title="Remove player"
-                                    >
-                                      <X className="w-4 h-4" />
-                                    </button>
-                                  </div>
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-gray-400">No players in team</p>
-                          )}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              ) : (
-                <div className="text-center py-4 text-gray-400">
-                  No teams found
-                </div>
-              )}
-            </div>
+          <div className="mt-4 mb-6 flex space-x-5">
+            <input
+              type="number"
+              placeholder="Amount (in Lakhs)"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full bg-gray-800/60 rounded-lg py-2 pl-4 pr-10 backdrop-blur-sm border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors"
+            />
+            <button
+              onClick={handleAllocatePlayer}
+              disabled={!amount || !currPlayer}
+              className="p-2 bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
+            >
+              Allocate
+            </button>
           </div>
         </div>
+
+        {/* Team Details Section */}
+        <div className="md:col-span-2 bg-gray-900/40 rounded-lg p-6 backdrop-blur-sm border border-gray-800">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">Team Details</h2>
+            <input
+              type="text"
+              placeholder="Search teams..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="bg-gray-800/60 rounded-lg py-2 px-4 backdrop-blur-sm border border-gray-700 focus:outline-none focus:border-orange-500"
+            />
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-800">
+                  <th className="text-left py-3 px-4">Select</th>
+                  <th className="text-left py-3 px-4">S.no</th>
+                  <th className="text-left py-3 px-4">Team Name</th>
+                  <th className="text-left py-3 px-4">Balance</th>
+                  <th className="text-left py-3 px-4">Players</th>
+                </tr>
+              </thead>
+            </table>
+
+            {Object.keys(participants).length > 0 ? (
+              <Accordion type="single" collapsible className="w-full">
+                {filteredTeams.map(([uid, team], index) => (
+                  <AccordionItem value={uid} key={uid} className="border-b border-gray-800">
+                    <AccordionTrigger className="w-full hover:no-underline">
+                      <div className="w-full grid grid-cols-5 gap-4">
+                        <div className="py-3 px-4 text-left"><input type="radio" name="curr_participant" value={uid} /></div>
+                        <div className="py-3 px-4 text-left">{index + 1}</div>
+                        <div className="py-3 px-4 text-left">{team.name}</div>
+                        <div className="py-3 px-4 text-left">₹{team.balance} L</div>
+                        <div className="py-3 px-4 text-left">{Object.keys(team.players || {}).length}</div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="px-4 py-3 bg-gray-800/30">
+                        <h4 className="font-semibold mb-2">Team Players:</h4>
+                        {team.players && Object.keys(team.players).length > 0 ? (
+                          <ul className="space-y-2">
+                            {Object.entries(team.players).map(([playerId, playerData]) => (
+                              <li key={playerId} className="flex justify-between items-center">
+                                <span>{players[playerData.player_id]?.name || "Unknown Player"}</span>
+                                <div className="flex items-center">
+                                  <span className="mr-4">₹{playerData.price} L</span>
+                                  <button
+                                    onClick={() => handleRemovePlayer(playerId)}
+                                    className="p-1 hover:bg-red-600 rounded-full transition-colors"
+                                    title="Remove player"
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-gray-400">No players in team</p>
+                        )}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            ) : (
+              <div className="text-center py-4 text-gray-400">
+                No teams found
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </main>
   );
 }

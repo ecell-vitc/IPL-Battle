@@ -1,7 +1,7 @@
 from admin.models import *
 from participant.models import *
 from auctioneer.models import *
-import csv
+import csv, random
 
 
 def read_players():
@@ -19,7 +19,7 @@ def read_players():
         for row in reader:
             Player(
                 name=row['fname'] + ' ' + row['lname'],
-                domestic=row['domestic'] == 'Indian',
+                domestic=row['country'] == 'India',
                 score=int(row['score']),
                 domain=choices[row['domain'].strip().upper()],
                 base_price=int(row['base_price']),
@@ -63,18 +63,22 @@ def read_users():
             ct += 1
 
 def read_questions():
+    questions = []
     with open('./scripts/questions.csv') as f:
         reader = csv.DictReader(f)
-        for row in reader:
-            q = Question(
-                room=Room.objects.get(name=row['room']),
-                question=row['question'],
+        for row in reader: questions.append(row)
+
+    for room in Room.objects.all():
+        selected = random.sample(questions, 10)
+        for question in selected:
+            Question(
+                room=room,
+                question=question['question'],
                 options={
-                    'A': row['optionA'],
-                    'B': row['optionB'],
-                    'C': row['optionC'],
-                    'D': row['optionD']
+                    'A': question['optionA'],
+                    'B': question['optionB'],
+                    'C': question['optionC'],
+                    'D': question['optionD']
                 },
-                correct_answer=row['correct_answer']
-            )
-            q.save()
+                correct_answer=question['correct_answer']
+            ).save()

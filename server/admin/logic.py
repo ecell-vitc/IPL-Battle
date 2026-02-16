@@ -90,6 +90,10 @@ def get_room_data(user: User, room: Room):
     random.seed(room.seed)
     random.shuffle(players)
 
+    if not room.curr_player:
+        room.curr_player = players[0]
+        room.save()
+
     return {
         "uid": user.uid.hex,
         "all_players": dict([
@@ -104,6 +108,6 @@ def get_room_data(user: User, room: Room):
                 'order': players[i].order
             }) for i in range(len(players))
         ]),
-        "curr_player": room.curr_player.uid.hex if room.curr_player else None,
+        "curr_player": room.curr_player.uid.hex,
         **(__get_auctioneer_room(room) if user.is_admin or user.is_auc else __get_participant_room(user))
     }

@@ -29,11 +29,10 @@ def read_players():
             order += 1
 
 def read_auc():
-    player = Player.objects.get(order=1)
     with open('./scripts/auc.csv') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            r = Room(name=row['room'], curr_player=player)
+            r = Room(name=row['room'])
             r.save()
 
             u = User(

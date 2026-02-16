@@ -84,7 +84,7 @@ def quiz_leaderboard(request, uid):
 def get_players(request):
     players = [player for player in Player.objects.all()]
     random.seed(42)
-    # random.shuffle(players)
+    random.shuffle(players)
 
     return JsonResponse(dict([
         (players[i].uid.hex, {

@@ -2,7 +2,7 @@ from participant.models import Participant, Team
 from auctioneer.models import Auctioneer
 from .models import Room, Player, User
 
-import uuid
+import uuid, random
 
 def __get_participant_room(user: User):
     participant = Participant.objects.get(user=user)
@@ -86,19 +86,24 @@ def is_player_allocated(room: Room):
 
 
 def get_room_data(user: User, room: Room):
-    players = Player.objects.all().order_by('order')
+    players = [player for player in Player.objects.all().order_by('order')]
+    random.seed(room.seed)
+    random.shuffle(players)
+
     return {
         "uid": user.uid.hex,
-        "all_players": dict([(players[i].uid.hex, {
-            'name': players[i].name,
-            'is_domestic': players[i].domestic,
-            'score': players[i].score,
-            'domain': players[i].domain,
-            'prev': None if i == 0 else players[i-1].uid.hex,
-            'next': None if i+1 == len(players) else players[i+1].uid.hex,
-            'base_price': players[i].base_price,
-            'order': players[i].order
-        }) for i in range(len(players))]),
+        "all_players": dict([
+            (players[i].uid.hex, {
+                'name': players[i].name,
+                'is_domestic': players[i].domestic,
+                'score': players[i].score,
+                'domain': players[i].domain,
+                'prev': None if i == 0 else players[i-1].uid.hex,
+                'next': None if i+1 == len(players) else players[i+1].uid.hex,
+                'base_price': players[i].base_price,
+                'order': players[i].order
+            }) for i in range(len(players))
+        ]),
         "curr_player": room.curr_player.uid.hex if room.curr_player else None,
         **(__get_auctioneer_room(room) if user.is_admin or user.is_auc else __get_participant_room(user))
     }

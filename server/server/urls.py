@@ -26,6 +26,7 @@ urlpatterns = [
     path('participant/', include('participant.urls')),
     path('auctioneer/', include('auctioneer.urls')),
     path('admin/', include('admin.urls')),
+    path('players/', views.get_players, name='get_players'),
     path('leaderboard/<str:id>/', views.get_board),
     path('quiz/<str:uid>/', views.questions, name='get_questions'),
     path('quiz/<str:uid>/leaderboard/', views.quiz_leaderboard, name='quiz_leaderboard')

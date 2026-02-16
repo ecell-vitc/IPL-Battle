@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import AbstractBaseUser
-import uuid
+import uuid, random
+
+def random_seed(): return random.randint(1000, 100000)
 
 # Create your models here.
 class User(AbstractBaseUser):
@@ -44,6 +46,7 @@ class Room(models.Model):
     uid = models.UUIDField(default=uuid.uuid4, primary_key=True)
     curr_player = models.ForeignKey(to=Player, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=25)
+    seed = models.IntegerField(default=random_seed)
 
 class Question(models.Model):
     uid = models.UUIDField(default=uuid.uuid4, primary_key=True)

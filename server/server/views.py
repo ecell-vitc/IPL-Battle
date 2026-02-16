@@ -1,9 +1,9 @@
 from django.http import JsonResponse
-from admin.models import Question, Scores, Room
+from admin.models import Question, Scores, Room, Player
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import AllowAny
 
-import uuid
+import uuid, random
 from lib import logic
 
 @api_view(['GET'])
@@ -64,20 +64,36 @@ def questions(request, uid):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def quiz_leaderboard(request, uid):
-    if request.method == 'GET':
-        try:
-            room = Room.objects.get(uid=uid)
-            scores = Scores.objects.filter(room=room).order_by('-score', 'timestamp')
-            
-            leaderboard = [
-                {
-                    "teamname": score.teamname,
-                    "score": score.score,
-                    "timestamp": score.timestamp.isoformat() if score.timestamp else None
-                } for score in scores
-            ]
-            return JsonResponse({"leaderboard": leaderboard}, status=200)
-        except Room.DoesNotExist:
-            return JsonResponse({"error": "Room not found"}, status=404)
+    try:
+        room = Room.objects.get(uid=uid)
+        scores = Scores.objects.filter(room=room).order_by('-score', 'timestamp')
+        
+        leaderboard = [
+            {
+                "teamname": score.teamname,
+                "score": score.score,
+                "timestamp": score.timestamp.isoformat() if score.timestamp else None
+            } for score in scores
+        ]
+        return JsonResponse({"leaderboard": leaderboard}, status=200)
+    except Room.DoesNotExist:
+        return JsonResponse({"error": "Room not found"}, status=404)
 
-    return JsonResponse({"error": "Method not allowed"}, status=405)
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_players(request):
+    players = [player for player in Player.objects.all()]
+    random.seed(42)
+    # random.shuffle(players)
+
+    return JsonResponse(dict([
+        (players[i].uid.hex, {
+            'name': players[i].name,
+            'is_domestic': players[i].domestic,
+            'domain': players[i].domain,
+            'prev': None if i == 0 else players[i-1].uid.hex,
+            'next': None if i == len(players)-1 else players[i+1].uid.hex,
+            'base_price': players[i].base_price,
+            'order': players[i].order
+        }) for i in range(len(players))
+    ]))

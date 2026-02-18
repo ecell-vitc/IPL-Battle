@@ -20,7 +20,7 @@ const Players = () => {
     }, [])
 
     return (
-        <main className="min-h-screen mx-auto lg:w-3/4 pt-12 flex flex-col flex-wrap justify-center content-center px-5 text-white">
+        <main className="min-h-screen mx-auto pt-24 px-4 sm:px-6 lg:px-8 max-w-6xl flex flex-col flex-wrap justify-center content-center px-5 text-white">
             {curr ? <Banner {...players[curr]} /> : <></>}
             <div className="inline-flex gap-5 mx-auto">
                 <button

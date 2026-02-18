@@ -24,10 +24,9 @@ function Rules() {
           <div className="bg-[#1B2A4E]/40 rounded-lg p-6 mb-8 backdrop-blur-sm border border-[#2C365E]">
             <h2 className="text-2xl font-semibold mb-4">Round 1: Qualifier</h2>
             <ul className="space-y-3">
-              <li>1. The participants will attempt a total of 15 MCQs (Multiple Choice Questions) within 7 minutes. </li>
-              <li>2. Navigating out of the portal will lead to the disqualification of the team. </li>
-              <li>3. The marking scheme is +1 for every correct answer with no negative markings involved. </li>
-              <li>4. The team with most points will get to select their desired IPL team that they will bid for, then the team with second points, and so forth. </li>
+              <li>1. The participants will attempt a total of 10 MCQs (Multiple Choice Questions) within 2 minutes. </li>
+              <li>2. The marking scheme is a set number out of 100 for every correct answer based on the time taken to answer with no negative markings involved. </li>
+              <li>3. The team with most points will get to select their desired IPL team that they will bid for, then the team with second points, and so forth. </li>
             </ul>
           </div>
 

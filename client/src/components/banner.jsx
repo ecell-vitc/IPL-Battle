@@ -11,7 +11,7 @@ const Banner = (props) => {
             <div className="w-full h-full relative z-[2]">
                 <div className="absolute top-[25%] left-[7.5%] w-full sm:w-2/3 md:w-1/2">
                     <p className="numans-regular text-base sm:text-3xl">{fname.toUpperCase()}</p>
-                    <p className="anton-regular text-4xl sm:text-7xl">{lname.toUpperCase()}</p>
+                    <p className={`anton-regular ${lname.length < 15 ? "text-4xl sm:text-7xl" : "text-3xl sm:text-6xl"}`}>{lname.toUpperCase()}</p>
                     <p className="-mt-4 text-[#F0EAB0] licorice-regular text-3xl sm:text-7xl">
                         {{
                             "BA": "Batsman",
@@ -23,10 +23,9 @@ const Banner = (props) => {
                 </div>
                 
                 {!props.score ? <></> : (
-                    <div className="absolute top-[5%] left-[50%]">
+                    <div className="absolute bottom-[15%] left-[45%]">
                         <p className="text-3xl md:text-7xl anton-regular text-center">{props.score}</p>
                         <div className="h-[5px] w-full bg-black"></div>
-                        <p className="text-base sm:text-2xl numas-regular text-center">POINTS</p>
                     </div>
                 )}
 

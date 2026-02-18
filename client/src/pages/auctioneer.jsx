@@ -178,7 +178,7 @@ function AuctioneerPage() {
   });
 
   return (
-    <main className="pt-24 min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 relative overflow-hidden text-white py-12 px-4 sm:px-6 lg:px-8">
+    <main className="pt-24 min-h-screen relative overflow-hidden text-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold mb-8">Auctioneer</h1>
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, User, Lock, Gamepad2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { makeRequest } from '../lib/utils';
 
 const Login = (props) => {
@@ -10,7 +9,6 @@ const Login = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   const role = (props.isAdmin ? 'admin' : props.isauc ? 'auctioneer' : 'participant');
 
@@ -38,10 +36,10 @@ const Login = (props) => {
       localStorage.setItem('role', role);
   
       if (role === 'participant' || role === 'auctioneer')
-        navigate(`/${role}/${data.room_uid}`);
+        window.location.href = `/${role}/${data.room_uid}`;
       
       else
-        navigate(`/admin/dashboard`);
+        window.location.href = `/admin/dashboard`;
     } catch (error) {
       console.error('Login error:', error);
       setError(error.message);

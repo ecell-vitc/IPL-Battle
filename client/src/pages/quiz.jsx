@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, CheckCircle, ArrowRight, Trophy, AlertCircle, Clock } from 'lucide-react';
 // CORRECT IMPORT PATH
@@ -185,7 +185,11 @@ const Quiz = () => {
                         {error && <p className="text-red-400 text-sm">{error}</p>}
                         <div className="text-blue-200">
                             <p>Team: <span className="font-bold text-orange-400">{teamName}</span></p>
-                            <p className="mt-2 text-sm text-blue-300/60">Wait for the auctioneer to announce results.</p>
+                            <Link to={`/quiz/${room_uid}/leaderboard`}>
+                                <button className="w-full py-4 px-6 bg-gradient-to-br from-blue-600 via-blue-500 to-orange-600 text-white font-medium rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg">
+                                    View Leaderboard
+                                </button>
+                            </Link>
                         </div>
                     </CardContent>
                 </Card>

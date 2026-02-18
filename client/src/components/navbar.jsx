@@ -26,7 +26,6 @@ const Navbar = () => {
   
       if (loginStatus !== isLoggedIn) {
         setIsLoggedIn(loginStatus);
-        setUserName(name);
       }
     };
   

@@ -23,7 +23,7 @@ const Banner = (props) => {
                 </div>
                 
                 {!props.score ? <></> : (
-                    <div className="absolute top-[25%] left-[50%]">
+                    <div className="absolute bottom-[5%] left-[50%]">
                         <p className="text-3xl md:text-8xl anton-regular text-center">{props.score}</p>
                         <div className="h-[5px] w-full bg-black"></div>
                         <p className="text-base sm:text-2xl numas-regular text-center">POINTS</p>

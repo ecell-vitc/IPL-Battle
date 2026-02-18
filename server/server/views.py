@@ -94,6 +94,7 @@ def get_players(request):
             'prev': None if i == 0 else players[i-1].uid.hex,
             'next': None if i == len(players)-1 else players[i+1].uid.hex,
             'base_price': players[i].base_price,
-            'order': players[i].order
+            'order': players[i].order,
+            'score': players[i].score
         }) for i in range(len(players))
     ]))

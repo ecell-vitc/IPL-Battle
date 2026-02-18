@@ -18,7 +18,7 @@ def read_players():
         order = 1
         for row in reader:
             Player(
-                name=row['fname'] + ' ' + row['lname'],
+                name=(row['fname'] + ' ' + row['lname']).strip(),
                 domestic=row['country'] == 'India',
                 score=int(row['score']),
                 domain=choices[row['domain'].strip().upper()],

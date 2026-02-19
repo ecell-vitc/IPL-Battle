@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { makeRequest } from '../lib/utils';
 
 function Rooms() {
   const [teams, setTeams] = useState([]);
 
   useEffect(() => {
-    fetch('https://ipl-battle.onrender.com/admin/rooms/', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Token ' + localStorage.getItem('token'),
-      },
-    }).then((response) => response.json())
-     .then((data) => {
+    makeRequest('/admin/rooms')
+      .then(data => {
         setTeams(data.rooms);
       })
   }, [])
